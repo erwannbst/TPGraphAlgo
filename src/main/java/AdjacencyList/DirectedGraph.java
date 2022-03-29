@@ -76,11 +76,13 @@ public class DirectedGraph extends AbstractListGraph<DirectedNode> implements ID
     @Override
     public void removeArc(DirectedNode from, DirectedNode to) {
     	from.getSuccs().remove(to);
+    	to.getPreds().remove(from);
     }
 
     @Override
     public void addArc(DirectedNode from, DirectedNode to) {
     	from.addSucc(to, 1);
+    	to.addPred(from,1);
     }
 
     //--------------------------------------------------
@@ -122,41 +124,14 @@ public class DirectedGraph extends AbstractListGraph<DirectedNode> implements ID
     @Override
     public IDirectedGraph computeInverse() {
         DirectedGraph g = new DirectedGraph(this);
-        // A completer
-        // --- Succ <--> pred
-        Map<DirectedNode, Integer> tmpPred = new HashMap<DirectedNode, Integer>();
-        Map<DirectedNode, Integer> tmpSuccs = new HashMap<DirectedNode, Integer>();
+
 
         for (DirectedNode n : g.getNodes()) {
-            System.out.println(getNodeOfList(n).getSuccs());
-            System.out.println(getNodeOfList(n).getPreds());
-
-            tmpPred.putAll(new HashMap<DirectedNode, Integer>(getNodeOfList(n).getPreds()));
-            tmpSuccs.putAll(new HashMap<DirectedNode, Integer>(getNodeOfList(n).getSuccs()));
-
-
-            for (Map.Entry<DirectedNode, Integer> nP : tmpPred.entrySet()) {
-                g.removeArc(new DirectedNode(n.getLabel()), new DirectedNode(nP.getKey().getLabel()));
-                g.addArc(n, nP.getKey());
-            }
-            for (Map.Entry<DirectedNode, Integer> nP : tmpSuccs.entrySet()) {
-                g.removeArc(new DirectedNode(nP.getKey().getLabel()), new DirectedNode(n.getLabel()));
-                //g.addArc(n,nP.getKey());
-            }
-
-            getNodeOfList(n).getPreds().clear();
-            getNodeOfList(n).getPreds().putAll(getNodeOfList(n).getSuccs());
-
-            getNodeOfList(n).getSuccs().clear();
-
-            getNodeOfList(n).getSuccs().putAll(tmpPred);
-
-            System.out.println("----");
-            System.out.println(getNodeOfList(n).getSuccs());
-            System.out.println(getNodeOfList(n).getPreds());
-            System.out.println("******");
-            tmpPred.clear();
-            //tmpSuccs.clear();
+            n.getSuccs().clear();
+            DirectedNode n2 = this.getNodeOfList(new DirectedNode(n.getLabel()));
+            n.getSuccs().putAll(n2.getPreds());
+            n.getPreds().clear();
+            n.getPreds().putAll(n2.getSuccs());
 
         }
 
@@ -206,6 +181,13 @@ public class DirectedGraph extends AbstractListGraph<DirectedNode> implements ID
         System.out.println("ajout de l'arc 1 vers 8");
         al.addArc(al.getNodeOfList(new DirectedNode(1)), al.getNodeOfList(new DirectedNode(8)));
         System.out.println(al);
+
+        //test de la methode compute inverse
+        System.out.println("test de la méthode compute inverse");
+        System.out.println("graphe de base");
+        System.out.println(al);
+        System.out.println("inversion du graph");
+        System.out.println(al.computeInverse());
 
 
     }
