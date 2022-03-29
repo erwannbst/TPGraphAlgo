@@ -53,7 +53,9 @@ public class AdjacencyMatrixDirectedValuedGraph extends AdjacencyMatrixDirectedG
 	@Override
 	public void removeArc(DirectedNode from, DirectedNode to) {
 		super.removeArc(from, to);
-		// A completer
+		if(!isArc(from, to)){
+			this.matrixCosts[from.getLabel()][to.getLabel()] = 0;
+		}
 	}
 
 	/**
@@ -61,7 +63,9 @@ public class AdjacencyMatrixDirectedValuedGraph extends AdjacencyMatrixDirectedG
      */
 	public void addArc(DirectedNode from, DirectedNode to, int cost ) {
 		super.addArc(from,to);
-		// A completer
+		if(this.matrixCosts[from.getLabel()][to.getLabel()] == 0) {
+			this.matrixCosts[from.getLabel()][to.getLabel()] = cost;
+		}
 	}
 	
 	public String toString() {
@@ -82,5 +86,23 @@ public class AdjacencyMatrixDirectedValuedGraph extends AdjacencyMatrixDirectedG
 		AdjacencyMatrixDirectedValuedGraph am = new AdjacencyMatrixDirectedValuedGraph(matrix, matrixValued);
 		System.out.println(am);
 		// A completer
+
+		System.out.println("• Add arc between 4 and 2 of cost 8 if no weight defined");
+		DirectedNode node1 = new DirectedNode(4),
+				node2 = new DirectedNode(2);
+		System.out.println("\tisArc ? " + am.isArc(node1, node2) + " of cost " + am.getMatrixCosts()[4][2]);
+		System.out.println("\tAdding arc...");
+		am.addArc(node1, node2, 8);
+		System.out.println("\tisArc ? " + am.isArc(node1, node2) + " of cost " + am.getMatrixCosts()[4][2] + "\n");
+
+
+		System.out.println("• Delete arc between 0 and 3");
+		node1 = new DirectedNode(0);
+		node2 = new DirectedNode(3);
+		System.out.println("\tisArc ? " + am.isArc(node1, node2) + " of cost " + am.getMatrixCosts()[0][3]);
+		System.out.println("\tDeleting arc...");
+		am.removeArc(node1, node2);
+		System.out.println("\tisArc ? " + am.isArc(node1, node2) + " of cost " + am.getMatrixCosts()[0][3] + "\n");
+
 	}
 }

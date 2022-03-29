@@ -2,6 +2,7 @@ package AdjacencyMatrix;
 
 import GraphAlgorithms.GraphTools;
 import Nodes.AbstractNode;
+import Nodes.DirectedNode;
 import Nodes.UndirectedNode;
 
 public class AdjacencyMatrixUndirectedValuedGraph extends AdjacencyMatrixUndirectedGraph {
@@ -56,7 +57,10 @@ public class AdjacencyMatrixUndirectedValuedGraph extends AdjacencyMatrixUndirec
 	@Override
 	public void removeEdge(UndirectedNode x, UndirectedNode y) {
 		super.removeEdge(x, y);
-		// A completer
+		if(!isEdge(x, y)){
+			this.matrixCosts[x.getLabel()][y.getLabel()] = 0;
+			this.matrixCosts[y.getLabel()][x.getLabel()] = 0;
+		}
 	}
 
 	/**
@@ -64,7 +68,10 @@ public class AdjacencyMatrixUndirectedValuedGraph extends AdjacencyMatrixUndirec
      */
 	public void addEdge(UndirectedNode x, UndirectedNode y, int cost ) {
 		super.addEdge(x,y);
-		// A completer
+		if(this.matrixCosts[x.getLabel()][y.getLabel()] == 0) {
+			this.matrixCosts[x.getLabel()][y.getLabel()] = cost;
+			this.matrixCosts[y.getLabel()][x.getLabel()] = cost;
+		}
 	}
 	
 	public String toString() {
@@ -87,6 +94,23 @@ public class AdjacencyMatrixUndirectedValuedGraph extends AdjacencyMatrixUndirec
 		AdjacencyMatrixUndirectedValuedGraph am = new AdjacencyMatrixUndirectedValuedGraph(matrix, matrixValued);
 		System.out.println(am);
 		// A completer
+
+		System.out.println("• Add arc between 4 and 2 of cost 8 if no weight defined");
+		UndirectedNode node1 = new UndirectedNode(4),
+				node2 = new UndirectedNode(2);
+		System.out.println("\tisArc ? " + am.isEdge(node1, node2) + " of cost " + am.getMatrixCosts()[4][2]);
+		System.out.println("\tAdding arc...");
+		am.addEdge(node1, node2, 8);
+		System.out.println("\tisArc ? " + am.isEdge(node1, node2) + " of cost " + am.getMatrixCosts()[4][2] + "\n");
+
+
+		System.out.println("• Remove arc between 0 and 7");
+		node1 = new UndirectedNode(0);
+		node2 = new UndirectedNode(7);
+		System.out.println("\tisArc ? " + am.isEdge(node1, node2) + " of cost " + am.getMatrixCosts()[0][7]);
+		System.out.println("\tRemoving arc...");
+		am.removeEdge(node1, node2);
+		System.out.println("\tisArc ? " + am.isEdge(node1, node2) + " of cost " + am.getMatrixCosts()[0][7] + "\n");
 	}
 
 }
