@@ -2,6 +2,7 @@ package AdjacencyList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import Abstraction.AbstractListGraph;
@@ -11,16 +12,16 @@ import Abstraction.IDirectedGraph;
 
 public class DirectedGraph extends AbstractListGraph<DirectedNode> implements IDirectedGraph {
 
-	private static int _DEBBUG =0;
-		
+    private static int _DEBBUG = 0;
+
     //--------------------------------------------------
     // 				Constructors
     //--------------------------------------------------
 
-	public DirectedGraph(){
-		super();
-		this.nodes = new ArrayList<DirectedNode>();
-	}
+    public DirectedGraph() {
+        super();
+        this.nodes = new ArrayList<DirectedNode>();
+    }
 
     public DirectedGraph(int[][] matrix) {
         this.order = matrix.length;
@@ -30,10 +31,10 @@ public class DirectedGraph extends AbstractListGraph<DirectedNode> implements ID
         }
         for (DirectedNode n : this.getNodes()) {
             for (int j = 0; j < matrix[n.getLabel()].length; j++) {
-            	DirectedNode nn = this.getNodes().get(j);
+                DirectedNode nn = this.getNodes().get(j);
                 if (matrix[n.getLabel()][j] != 0) {
-                    n.getSuccs().put(nn,0);
-                    nn.getPreds().put(n,0);
+                    n.getSuccs().put(nn, 0);
+                    nn.getPreds().put(n, 0);
                     this.m++;
                 }
             }
@@ -45,15 +46,15 @@ public class DirectedGraph extends AbstractListGraph<DirectedNode> implements ID
         this.nodes = new ArrayList<>();
         this.order = g.getNbNodes();
         this.m = g.getNbArcs();
-        for(DirectedNode n : g.getNodes()) {
+        for (DirectedNode n : g.getNodes()) {
             this.nodes.add(makeNode(n.getLabel()));
         }
         for (DirectedNode n : g.getNodes()) {
-        	DirectedNode nn = this.getNodes().get(n.getLabel());
+            DirectedNode nn = this.getNodes().get(n.getLabel());
             for (DirectedNode sn : n.getSuccs().keySet()) {
                 DirectedNode snn = this.getNodes().get(sn.getLabel());
-                nn.getSuccs().put(snn,0);
-                snn.getPreds().put(nn,0);
+                nn.getSuccs().put(snn, 0);
+                snn.getPreds().put(nn, 0);
             }
         }
 
@@ -70,19 +71,19 @@ public class DirectedGraph extends AbstractListGraph<DirectedNode> implements ID
 
     @Override
     public boolean isArc(DirectedNode from, DirectedNode to) {
-    	return from.getSuccs().containsKey(to);
+        return from.getSuccs().containsKey(to);
     }
 
     @Override
     public void removeArc(DirectedNode from, DirectedNode to) {
-    	from.getSuccs().remove(to);
-    	to.getPreds().remove(from);
+        from.getSuccs().remove(to);
+        to.getPreds().remove(from);
     }
 
     @Override
     public void addArc(DirectedNode from, DirectedNode to) {
-    	from.addSucc(to, 1);
-    	to.addPred(from,1);
+        from.addSucc(to, 1);
+        to.addPred(from, 1);
     }
 
     //--------------------------------------------------
@@ -91,6 +92,7 @@ public class DirectedGraph extends AbstractListGraph<DirectedNode> implements ID
 
     /**
      * Method to generify node creation
+     *
      * @param label of a node
      * @return a node typed by A extends DirectedNode
      */
@@ -137,13 +139,13 @@ public class DirectedGraph extends AbstractListGraph<DirectedNode> implements ID
 
         return g;
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder s = new StringBuilder();
-        for(DirectedNode n : nodes){
+        for (DirectedNode n : nodes) {
             s.append("successors of ").append(n).append(" : ");
-            for(DirectedNode sn : n.getSuccs().keySet()){
+            for (DirectedNode sn : n.getSuccs().keySet()) {
                 s.append(sn).append(" ");
             }
             s.append("\n");
@@ -151,6 +153,64 @@ public class DirectedGraph extends AbstractListGraph<DirectedNode> implements ID
         s.append("\n");
         return s.toString();
     }
+
+    //parcours en profondeur
+    public void depthFirstSearch(DirectedNode n) {
+        if (this.nodes.contains(n)) {
+            ArrayList<DirectedNode> visited = new ArrayList<DirectedNode>();
+            int cpt = 0;
+            depthFirstSearchRecursive(n, visited, cpt);
+        }
+    }
+
+    //parcours en profondeur récursif
+    public int depthFirstSearchRecursive(DirectedNode n, ArrayList<DirectedNode> visited, int cpt) {
+        cpt++;
+        System.out.println(n + " " + cpt);
+        visited.add(n);
+        for (DirectedNode sn : n.getSuccs().keySet()) {
+            if (!visited.contains(sn)) {
+                cpt = this.depthFirstSearchRecursive(sn, visited, cpt);
+            }
+        }
+        cpt++;
+        System.out.println(n + " " + cpt);
+        return cpt;
+    }
+
+    //parcours en largeur
+    public void breadthFirstSearch(DirectedNode n) {
+        if (this.nodes.contains(n)) {
+            ArrayList<DirectedNode> visited = new ArrayList<>();
+            visited.add(n);
+            int cpt = 1;
+            System.out.println(n + " " + cpt);
+            breadthFirstSearchRecursive(n, visited, cpt);
+        }
+    }
+
+    //parcours en largeur récursif
+    public int breadthFirstSearchRecursive(DirectedNode n, ArrayList<DirectedNode> visited, int cpt) {
+
+        ArrayList<DirectedNode> nodeToVisit = new ArrayList<>();
+
+        for(DirectedNode sn : n.getSuccs().keySet()) {
+            if(!visited.contains(sn)) {
+                cpt++;
+                System.out.println(sn + " " + cpt);
+                nodeToVisit.add(sn);
+                visited.add(sn);
+            }
+        }
+
+        for (DirectedNode sn : nodeToVisit) {
+                cpt = this.breadthFirstSearchRecursive(sn, visited, cpt);
+        }
+        return cpt;
+    }
+
+
+
 
     public static void main(String[] args) {
         int[][] Matrix = GraphTools.generateGraphData(10, 20, false, false, false, 100001);
@@ -189,6 +249,17 @@ public class DirectedGraph extends AbstractListGraph<DirectedNode> implements ID
         System.out.println("inversion du graph");
         System.out.println(al.computeInverse());
 
+        //parcours en profondeur
+        System.out.println("graph de base");
+        System.out.println(al);
+        System.out.println("parcours en profondeur");
+        al.depthFirstSearch(al.getNodeOfList(new DirectedNode(1)));
+
+        //parcours en largeur
+        System.out.println("graph de base");
+        System.out.println(al);
+        System.out.println("parcours en largeur");
+        al.breadthFirstSearch(al.getNodeOfList(new DirectedNode(1)));
 
     }
 }

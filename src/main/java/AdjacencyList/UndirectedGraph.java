@@ -143,6 +143,8 @@ public class UndirectedGraph extends AbstractListGraph<UndirectedNode> implement
         return s.toString();
     }
 
+    //parcours en profondeur
+
     public static void main(String[] args) {
         int[][] mat = GraphTools.generateGraphData(10, 20, false, true, false, 100001);
         GraphTools.afficherMatrix(mat);
