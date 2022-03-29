@@ -144,6 +144,60 @@ public class UndirectedGraph extends AbstractListGraph<UndirectedNode> implement
     }
 
     //parcours en profondeur
+    public void depthFirstSearch(UndirectedNode n) {
+        if (this.nodes.contains(n)) {
+            ArrayList<UndirectedNode> visited = new ArrayList<UndirectedNode>();
+            int cpt = 0;
+            depthFirstSearchRecursive(n, visited, cpt);
+        }
+    }
+
+    //parcours en profondeur récursif
+    public int depthFirstSearchRecursive(UndirectedNode n, ArrayList<UndirectedNode> visited, int cpt) {
+        cpt++;
+        System.out.println(n + " " + cpt);
+        visited.add(n);
+        for (UndirectedNode sn : n.getNeighbours().keySet()) {
+            if (!visited.contains(sn)) {
+                cpt = this.depthFirstSearchRecursive(sn, visited, cpt);
+            }
+        }
+        cpt++;
+        System.out.println(n + " " + cpt);
+        return cpt;
+    }
+
+
+    //parcours en largeur
+    public void breadthFirstSearch(UndirectedNode n) {
+        if (this.nodes.contains(n)) {
+            ArrayList<UndirectedNode> visited = new ArrayList<>();
+            visited.add(n);
+            int cpt = 1;
+            System.out.println(n + " " + cpt);
+            breadthFirstSearchRecursive(n, visited, cpt);
+        }
+    }
+
+    //parcours en largeur récursif
+    public int breadthFirstSearchRecursive(UndirectedNode n, ArrayList<UndirectedNode> visited, int cpt) {
+
+        ArrayList<UndirectedNode> nodeToVisit = new ArrayList<>();
+
+        for(UndirectedNode sn : n.getNeighbours().keySet()) {
+            if(!visited.contains(sn)) {
+                cpt++;
+                System.out.println(sn + " " + cpt);
+                nodeToVisit.add(sn);
+                visited.add(sn);
+            }
+        }
+
+        for (UndirectedNode sn : nodeToVisit) {
+            cpt = this.breadthFirstSearchRecursive(sn, visited, cpt);
+        }
+        return cpt;
+    }
 
     public static void main(String[] args) {
         int[][] mat = GraphTools.generateGraphData(10, 20, false, true, false, 100001);
@@ -169,6 +223,18 @@ public class UndirectedGraph extends AbstractListGraph<UndirectedNode> implement
         System.out.println("Ajout de l'arete entre 2 et 7");
         al.addEdge(al.getNodeOfList(new UndirectedNode(2)),al.getNodeOfList(new UndirectedNode(7)));
         System.out.println(al);
+
+        //test de depthFirstSearch
+        System.out.println("test de depthFirstSearch");
+        System.out.println("affichage du graphe");
+        System.out.println(al);
+        al.depthFirstSearch(al.getNodeOfList(new UndirectedNode(1)));
+
+        //test de breadthFirstSearch
+        System.out.println("test de breadthFirstSearch");
+        System.out.println("affichage du graphe");
+        System.out.println(al);
+        al.breadthFirstSearch(al.getNodeOfList(new UndirectedNode(1)));
     }
 
 }
