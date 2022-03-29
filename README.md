@@ -1,8 +1,6 @@
-### TP de graph algo
+# TP de graph algo
 
-Maël
-Nathanaël
-Erwann
+Maël SUARD | Nathanaël GEY | Erwann BESTARD
 
 ## TP 1
 
@@ -12,7 +10,7 @@ Erwann
 
 ## TP 4
 
-# Consignes
+### Consignes
 
 Vous remettrez la partie 6 du TP 2, la partie 2 du TP 3, et les algorithmes de Dijkstra et Belmann en projet archive zip (contenant les noms) avant le 30 avril au soir. 
 
