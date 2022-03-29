@@ -1,6 +1,7 @@
 package AdjacencyList;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import Abstraction.AbstractListGraph;
@@ -122,6 +123,43 @@ public class DirectedGraph extends AbstractListGraph<DirectedNode> implements ID
     public IDirectedGraph computeInverse() {
         DirectedGraph g = new DirectedGraph(this);
         // A completer
+        // --- Succ <--> pred
+        Map<DirectedNode, Integer> tmpPred = new HashMap<DirectedNode, Integer>();
+        Map<DirectedNode, Integer> tmpSuccs = new HashMap<DirectedNode, Integer>();
+
+        for (DirectedNode n : g.getNodes()) {
+            System.out.println(getNodeOfList(n).getSuccs());
+            System.out.println(getNodeOfList(n).getPreds());
+
+            tmpPred.putAll(new HashMap<DirectedNode, Integer>(getNodeOfList(n).getPreds()));
+            tmpSuccs.putAll(new HashMap<DirectedNode, Integer>(getNodeOfList(n).getSuccs()));
+
+
+            for (Map.Entry<DirectedNode, Integer> nP : tmpPred.entrySet()) {
+                g.removeArc(new DirectedNode(n.getLabel()), new DirectedNode(nP.getKey().getLabel()));
+                g.addArc(n, nP.getKey());
+            }
+            for (Map.Entry<DirectedNode, Integer> nP : tmpSuccs.entrySet()) {
+                g.removeArc(new DirectedNode(nP.getKey().getLabel()), new DirectedNode(n.getLabel()));
+                //g.addArc(n,nP.getKey());
+            }
+
+            getNodeOfList(n).getPreds().clear();
+            getNodeOfList(n).getPreds().putAll(getNodeOfList(n).getSuccs());
+
+            getNodeOfList(n).getSuccs().clear();
+
+            getNodeOfList(n).getSuccs().putAll(tmpPred);
+
+            System.out.println("----");
+            System.out.println(getNodeOfList(n).getSuccs());
+            System.out.println(getNodeOfList(n).getPreds());
+            System.out.println("******");
+            tmpPred.clear();
+            //tmpSuccs.clear();
+
+        }
+
         return g;
     }
     
