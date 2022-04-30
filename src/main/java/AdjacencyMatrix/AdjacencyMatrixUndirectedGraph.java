@@ -1,8 +1,10 @@
 package AdjacencyMatrix;
 
 import Abstraction.AbstractMatrixGraph;
+import AdjacencyList.DirectedGraph;
 import GraphAlgorithms.GraphTools;
 import Nodes.AbstractNode;
+import Nodes.DirectedNode;
 import Nodes.UndirectedNode;
 import Abstraction.IUndirectedGraph;
 
@@ -111,6 +113,9 @@ public class AdjacencyMatrixUndirectedGraph extends AbstractMatrixGraph<Undirect
         return s.toString();
     }
 
+
+
+
     public static void main(String[] args) {
         int[][] mat2 = GraphTools.generateGraphData(10, 35, false, true, false, 100001);
         GraphTools.afficherMatrix(mat2);
@@ -118,23 +123,22 @@ public class AdjacencyMatrixUndirectedGraph extends AbstractMatrixGraph<Undirect
         System.out.println(am);
 
         System.out.println("\n isEdge : " + am.isEdge(new UndirectedNode(2), new UndirectedNode(5)));
-		
 
-		System.out.println("N = "+am.getNbNodes()+ "\n M = "+am.getNbEdges());
-		List<Integer> t2 = am.getNeighbours(new UndirectedNode(2));
-		for (Integer integer : t2) {
-			System.out.print(integer + ", ");
-		}
-		System.out.println("");
-		
-		
-		
-		for(int i = 0; i<3;i++)
-			am.addEdge(new UndirectedNode(2), new UndirectedNode(5));
-		System.out.println(am);
-		am.removeEdge(new UndirectedNode(2), new UndirectedNode(5));
-		System.out.println(am);
-		// A completer
+
+        System.out.println("N = " + am.getNbNodes() + "\n M = " + am.getNbEdges());
+        List<Integer> t2 = am.getNeighbours(new UndirectedNode(2));
+        for (Integer integer : t2) {
+            System.out.print(integer + ", ");
+        }
+        System.out.println("");
+
+
+        for (int i = 0; i < 3; i++)
+            am.addEdge(new UndirectedNode(2), new UndirectedNode(5));
+        System.out.println(am);
+        am.removeEdge(new UndirectedNode(2), new UndirectedNode(5));
+        System.out.println(am);
+        // A completer
 
 
     }

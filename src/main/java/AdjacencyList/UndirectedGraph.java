@@ -15,11 +15,11 @@ public class UndirectedGraph extends AbstractListGraph<UndirectedNode> implement
     // 				Constructors
     //--------------------------------------------------
 
-	public UndirectedGraph() {
-		 this.nodes = new ArrayList<>();
-	}
-	
-	public UndirectedGraph(List<UndirectedNode> nodes) {
+    public UndirectedGraph() {
+        this.nodes = new ArrayList<>();
+    }
+
+    public UndirectedGraph(List<UndirectedNode> nodes) {
         super(nodes);
         for (UndirectedNode i : nodes) {
             this.m += i.getNbNeigh();
@@ -34,10 +34,10 @@ public class UndirectedGraph extends AbstractListGraph<UndirectedNode> implement
         }
         for (UndirectedNode n : this.getNodes()) {
             for (int j = n.getLabel(); j < matrix[n.getLabel()].length; j++) {
-            	UndirectedNode nn = this.getNodes().get(j);
+                UndirectedNode nn = this.getNodes().get(j);
                 if (matrix[n.getLabel()][j] != 0) {
-                    n.getNeighbours().put(nn,0);
-                    nn.getNeighbours().put(n,0);
+                    n.getNeighbours().put(nn, 0);
+                    nn.getNeighbours().put(n, 0);
                     this.m++;
                 }
             }
@@ -53,11 +53,11 @@ public class UndirectedGraph extends AbstractListGraph<UndirectedNode> implement
             this.nodes.add(makeNode(n.getLabel()));
         }
         for (UndirectedNode n : g.getNodes()) {
-        	UndirectedNode nn = this.getNodes().get(n.getLabel());
+            UndirectedNode nn = this.getNodes().get(n.getLabel());
             for (UndirectedNode sn : n.getNeighbours().keySet()) {
-            	UndirectedNode snn = this.getNodes().get(sn.getLabel());
-                nn.getNeighbours().put(snn,0);
-                snn.getNeighbours().put(nn,0);
+                UndirectedNode snn = this.getNodes().get(sn.getLabel());
+                nn.getNeighbours().put(snn, 0);
+                snn.getNeighbours().put(nn, 0);
             }
         }
 
@@ -73,32 +73,33 @@ public class UndirectedGraph extends AbstractListGraph<UndirectedNode> implement
     }
 
     @Override
-    public boolean isEdge(UndirectedNode x, UndirectedNode y) {  
-    	return getNodeOfList(x).getNeighbours().containsKey(getNodeOfList(y));
+    public boolean isEdge(UndirectedNode x, UndirectedNode y) {
+        return getNodeOfList(x).getNeighbours().containsKey(getNodeOfList(y));
     }
 
     @Override
     public void removeEdge(UndirectedNode x, UndirectedNode y) {
-    	if(isEdge(x,y)){
-    		x.getNeighbours().remove(y);
-    		y.getNeighbours().remove(x);
-    	}
+        if (isEdge(x, y)) {
+            x.getNeighbours().remove(y);
+            y.getNeighbours().remove(x);
+        }
     }
 
     @Override
     public void addEdge(UndirectedNode x, UndirectedNode y) {
-    	if(!isEdge(x,y)){
-    		x.addNeigh(y, 1);
-    		y.addNeigh(x, 1);
-    	}
+        if (!isEdge(x, y)) {
+            x.addNeigh(y, 1);
+            y.addNeigh(x, 1);
+        }
     }
 
     //--------------------------------------------------
     // 					Methods
     //--------------------------------------------------
-    
+
     /**
      * Method to generify node creation
+     *
      * @param label of a node
      * @return a node typed by A extends UndirectedNode
      */
@@ -113,7 +114,7 @@ public class UndirectedGraph extends AbstractListGraph<UndirectedNode> implement
     public UndirectedNode getNodeOfList(UndirectedNode src) {
         return this.getNodes().get(src.getLabel());
     }
-    
+
     /**
      * @return the adjacency matrix representation int[][] of the graph
      */
@@ -143,25 +144,45 @@ public class UndirectedGraph extends AbstractListGraph<UndirectedNode> implement
         return s.toString();
     }
 
-    //parcours en profondeur
-    public void depthFirstSearch(UndirectedNode n) {
+
+    public int[] depthFirstSearch(UndirectedNode src) {
+        int[] order = new int[this.getNbNodes() * 2];
+        ArrayList<UndirectedNode> visited = new ArrayList<>();
+        int cpt = 0;
+        depthFirstSearchNode(src, visited, cpt, order);
+        for (UndirectedNode node : this.getNodes()) {
+            if(!visited.contains(node)){
+                depthFirstSearchNode(node, visited, cpt, order);
+            }
+        }
+        return order;
+    }
+
+    //parcours en profondeur à partir d'une nouvelle source
+    public void depthFirstSearchNode(UndirectedNode n, ArrayList<UndirectedNode> visited, int cpt, int[] order) {
         if (this.nodes.contains(n)) {
-            ArrayList<UndirectedNode> visited = new ArrayList<UndirectedNode>();
-            int cpt = 0;
-            depthFirstSearchRecursive(n, visited, cpt);
+
+            depthFirstSearchRecursive(n, visited, cpt, order);
+            for (UndirectedNode node : this.getNodes()) {
+                if (!visited.contains(node)) {
+                    depthFirstSearchNode(node, visited,cpt, order);
+                }
+            }
         }
     }
 
     //parcours en profondeur récursif
-    public int depthFirstSearchRecursive(UndirectedNode n, ArrayList<UndirectedNode> visited, int cpt) {
+    public int depthFirstSearchRecursive(UndirectedNode n, ArrayList<UndirectedNode> visited, int cpt, int[] order) {
+        order[cpt] = n.getLabel();
         cpt++;
         System.out.println(n + " " + cpt);
         visited.add(n);
         for (UndirectedNode sn : n.getNeighbours().keySet()) {
             if (!visited.contains(sn)) {
-                cpt = this.depthFirstSearchRecursive(sn, visited, cpt);
+                cpt = this.depthFirstSearchRecursive(sn, visited, cpt, order);
             }
         }
+        order[cpt] = n.getLabel();
         cpt++;
         System.out.println(n + " " + cpt);
         return cpt;
@@ -184,8 +205,8 @@ public class UndirectedGraph extends AbstractListGraph<UndirectedNode> implement
 
         ArrayList<UndirectedNode> nodeToVisit = new ArrayList<>();
 
-        for(UndirectedNode sn : n.getNeighbours().keySet()) {
-            if(!visited.contains(sn)) {
+        for (UndirectedNode sn : n.getNeighbours().keySet()) {
+            if (!visited.contains(sn)) {
                 cpt++;
                 System.out.println(sn + " " + cpt);
                 nodeToVisit.add(sn);
@@ -221,14 +242,18 @@ public class UndirectedGraph extends AbstractListGraph<UndirectedNode> implement
         System.out.println("affichage du graphe");
         System.out.println(al);
         System.out.println("Ajout de l'arete entre 2 et 7");
-        al.addEdge(al.getNodeOfList(new UndirectedNode(2)),al.getNodeOfList(new UndirectedNode(7)));
+        al.addEdge(al.getNodeOfList(new UndirectedNode(2)), al.getNodeOfList(new UndirectedNode(7)));
         System.out.println(al);
 
         //test de depthFirstSearch
         System.out.println("test de depthFirstSearch");
         System.out.println("affichage du graphe");
         System.out.println(al);
-        al.depthFirstSearch(al.getNodeOfList(new UndirectedNode(1)));
+        int[] order = al.depthFirstSearch(al.getNodeOfList(new UndirectedNode(1)));
+        System.out.println("ordre de parcours en profondeur");
+        for (int i = 0; i < order.length; i++) {
+            System.out.print(order[i] + " ");
+        }
 
         //test de breadthFirstSearch
         System.out.println("test de breadthFirstSearch");

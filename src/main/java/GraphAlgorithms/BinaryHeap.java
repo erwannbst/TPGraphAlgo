@@ -28,33 +28,95 @@ public class BinaryHeap {
     }
 
     public void insert(int element) {
-    	// TODO: Complete
+        boolean inserted = false;
+        int index = this.nodes.length;
+    	for (int i = 0; i < nodes.length; i++) {
+            if (nodes[i] == Integer.MAX_VALUE && !inserted) {
+                nodes[i] = element;
+                inserted = true;
+                index = i;
+            }
+        }
+        if (!inserted) {
+            resize();
+            nodes[index] = element;
+        }
+        pos++;
+
+
+        int parent = getParent(index);
+        while(this.nodes[index] < this.nodes[parent] && index != 0) {
+            swap(index, parent);
+            int tmp = parent;
+            parent = getParent(tmp);
+            index = tmp;
+        }
+
     }
 
     public int remove() {
-    	// TODO: Complete
-    	return 0;
+        int value = nodes[0];
+
+        int lastLeaf =0;
+
+        for(int i = 0; i<this.nodes.length; i++){
+            if(this.nodes[i] == Integer.MAX_VALUE){
+                lastLeaf = i -1;
+                break;
+            }
+        }
+        swap(0, lastLeaf);
+        nodes[lastLeaf] = Integer.MAX_VALUE;
+
+        int bestChild = getBestChildPos(0);
+        int parent = 0;
+        while(!isLeaf(parent) && this.nodes[parent] > this.nodes[bestChild]) {
+            swap(parent, bestChild);
+            int tmp = bestChild;
+            bestChild = getBestChildPos(bestChild);
+            parent = tmp;
+        }
+
+    	return value;
+    }
+
+    private int getParent(int i) {
+    	return (i-1)/2;
+    }
+
+    private int getLeftChild(int index) {
+        return 2 * index + 1;
+    }
+
+    private int getRightChild(int index) {
+        return 2 * index + 2;
     }
 
     private int getBestChildPos(int src) {
         if (isLeaf(src)) { // the leaf is a stopping case, then we return a default value
             return Integer.MAX_VALUE;
         } else {
-        	// TODO: Complete
-        	return Integer.MAX_VALUE;
+            int leftChild = this.nodes[getLeftChild(src)];
+            int rightChild = this.nodes[getRightChild(src)];
+
+
+            if(leftChild <= rightChild) {
+                return getLeftChild(src);
+            }else {
+                return getRightChild(src);
+            }
         }
     }
 
-    
+
     /**
 	 * Test if the node is a leaf in the binary heap
-	 * 
+	 *
 	 * @returns true if it's a leaf or false else
-	 * 
-	 */	
+	 *
+	 */
     private boolean isLeaf(int src) {
-    	// TODO: Complete
-    	return false;
+        return getLeftChild(src) >= this.nodes.length || this.nodes[getLeftChild(src)] == Integer.MAX_VALUE;
     }
 
     private void swap(int father, int child) {
@@ -73,9 +135,9 @@ public class BinaryHeap {
 
     /**
 	 * Recursive test to check the validity of the binary heap
-	 * 
+	 *
 	 * @returns a boolean equal to True if the binary tree is compact from left to right
-	 * 
+	 *
 	 */
     public boolean test() {
         return this.isEmpty() || testRec(0);
@@ -95,6 +157,10 @@ public class BinaryHeap {
         }
     }
 
+
+
+
+
     public static void main(String[] args) {
         BinaryHeap jarjarBin = new BinaryHeap();
         System.out.println(jarjarBin.isEmpty()+"\n");
@@ -105,12 +171,17 @@ public class BinaryHeap {
         while (k > 0) {
             int rand = min + (int) (Math.random() * ((max - min) + 1));
             System.out.print("insert " + rand);
-            jarjarBin.insert(rand);            
+            jarjarBin.insert(rand);
             k--;
         }
-     // TODO: Complete
         System.out.println("\n" + jarjarBin);
         System.out.println(jarjarBin.test());
+
+        // test of remove
+        for(int i=0; i < 10; i++){
+            System.out.println("remove: " + jarjarBin.remove());
+        }
+
     }
 
 }
