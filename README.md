@@ -17,7 +17,7 @@ La classe UndirectedValuedGraph contient l'algorithme de PRIM.
 
 **Q5.**
 
-* *Comment utiliseriez-vous la structure de tas binaire dans votre mise en œuvre de l’algo- rithme PRIM ?*
+* *Comment utiliseriez-vous la structure de tas binaire dans votre mise en œuvre de l’algorithme de PRIM ?*
 
   On utilise la structure de tas binaire pour obtenir à chaque fois l'arête du plus faible poids.
 
@@ -29,7 +29,7 @@ La classe UndirectedValuedGraph contient l'algorithme de PRIM.
 
 * *Quel gain en terme de complexité par rapport à votre algorithme ?*
 
-  Les gains en complexité se fond lors de la recherche de l'arrête du plus faible poids. L'implémentation classique à
+  Les gains en complexité se font lors de la recherche de l'arrête du plus faible poids. L'implémentation classique à
   besoin de comparer toutes les arêtes dans le graphe O(m).
   Avec la structure de tas binaire, on peut supprimer l'arête du plus faible poids en O(1)
   Si on prend en compte les operations internes pour réorganiser la structure de tas, on obtient O(log(m))
